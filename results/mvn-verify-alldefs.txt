@@ -1,0 +1,112 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< mn.edu.must.sqat:lab10-dataflow >-------------------
+[INFO] Building lab10-dataflow 1.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ lab10-dataflow ---
+[INFO] Deleting D:\Codings\2026\F.CSA313\lab10-dataflow\target
+[INFO] 
+[INFO] --- jacoco:0.8.12:prepare-agent (default) @ lab10-dataflow ---
+[INFO] argLine set to -javaagent:C:\\Users\\hp\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.12\\org.jacoco.agent-0.8.12-runtime.jar=destfile=D:\\Codings\\2026\\F.CSA313\\lab10-dataflow\\target\\jacoco.exec
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ lab10-dataflow ---
+[INFO] skip non existing resourceDirectory D:\Codings\2026\F.CSA313\lab10-dataflow\src\main\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ lab10-dataflow ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 1 source file with javac [debug release 17] to target\classes
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ lab10-dataflow ---
+[INFO] skip non existing resourceDirectory D:\Codings\2026\F.CSA313\lab10-dataflow\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ lab10-dataflow ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 2 source files with javac [debug release 17] to target\test-classes
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ lab10-dataflow ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+mvn : java.lang.instrument.IllegalClassFormatException: Error while instrumenting 
+sun/util/resources/cldr/provider/CLDRLocaleDataMetaInfo with JaCoCo 0.8.12.202403310830/dbfb6f2.
+At line:1 char:1
++ mvn clean verify 2>&1 | Out-File -Encoding utf8 results\mvn-verify-al ...
++ ~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (java.lang.instr...310830/dbfb6f2.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+	at org.jacoco.agent.rt.internal_aeaf9ab.CoverageTransformer.transform(CoverageTransformer.java:94)
+	at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+	at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+	at java.base/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1052)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:164)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:735)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassInModuleOrNull(BuiltinClassLoader.java:678)
+	at java.base/jdk.internal.loader.BuiltinClassLoader.findClass(BuiltinClassLoader.java:560)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:602)
+	at java.base/java.lang.Class.forName(Class.java:595)
+	at java.base/java.util.ServiceLoader.loadProvider(ServiceLoader.java:755)
+	at java.base/java.util.ServiceLoader$ModuleServicesLookupIterator.hasNext(ServiceLoader.java:955)
+	at java.base/java.util.ServiceLoader$1.hasNext(ServiceLoader.java:1164)
+	at java.base/java.util.ServiceLoader$2.hasNext(ServiceLoader.java:1246)
+	at java.base/sun.util.cldr.CLDRLocaleProviderAdapter.<init>(CLDRLocaleProviderAdapter.java:75)
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.ja
+va:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at java.base/sun.util.locale.provider.LocaleProviderAdapter.forType(LocaleProviderAdapter.java:181)
+	at java.base/sun.util.locale.provider.LocaleProviderAdapter.findAdapter(LocaleProviderAdapter.java:280)
+	at java.base/sun.util.locale.provider.LocaleProviderAdapter.getAdapter(LocaleProviderAdapter.java:251)
+	at java.base/java.util.Calendar.createCalendar(Calendar.java:1692)
+	at java.base/java.util.Calendar.getInstance(Calendar.java:1659)
+	at java.base/java.text.SimpleDateFormat.initializeCalendar(SimpleDateFormat.java:680)
+	at java.base/java.text.SimpleDateFormat.<init>(SimpleDateFormat.java:624)
+	at java.base/java.text.SimpleDateFormat.<init>(SimpleDateFormat.java:603)
+	at org.apache.maven.surefire.booter.PpidChecker.createWindowsCreationDateFormat(PpidChecker.java:316)
+	at org.apache.maven.surefire.booter.PpidChecker.<clinit>(PpidChecker.java:71)
+	at org.apache.maven.surefire.booter.ForkedBooter.listenToShutdownCommands(ForkedBooter.java:218)
+	at org.apache.maven.surefire.booter.ForkedBooter.setupBooter(ForkedBooter.java:139)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:506)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+Caused by: java.io.IOException: Error while instrumenting 
+sun/util/resources/cldr/provider/CLDRLocaleDataMetaInfo with JaCoCo 0.8.12.202403310830/dbfb6f2.
+	at org.jacoco.agent.rt.internal_aeaf9ab.core.instr.Instrumenter.instrumentError(Instrumenter.java:161)
+	at org.jacoco.agent.rt.internal_aeaf9ab.core.instr.Instrumenter.instrument(Instrumenter.java:111)
+	at org.jacoco.agent.rt.internal_aeaf9ab.CoverageTransformer.transform(CoverageTransformer.java:92)
+	... 33 more
+Caused by: java.lang.IllegalArgumentException: Unsupported class file major version 68
+	at org.jacoco.agent.rt.internal_aeaf9ab.asm.ClassReader.<init>(ClassReader.java:200)
+	at org.jacoco.agent.rt.internal_aeaf9ab.asm.ClassReader.<init>(ClassReader.java:180)
+	at org.jacoco.agent.rt.internal_aeaf9ab.asm.ClassReader.<init>(ClassReader.java:166)
+	at org.jacoco.agent.rt.internal_aeaf9ab.core.internal.instr.InstrSupport.classReaderFor(InstrSupport.java:280)
+	at org.jacoco.agent.rt.internal_aeaf9ab.core.instr.Instrumenter.instrument(Instrumenter.java:77)
+	at org.jacoco.agent.rt.internal_aeaf9ab.core.instr.Instrumenter.instrument(Instrumenter.java:109)
+	... 34 more
+[INFO] Running mn.edu.must.sqat.BonusTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.107 s -- in mn.edu.must.sqat.BonusTest
+[INFO] Running mn.edu.must.sqat.GcdTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s -- in mn.edu.must.sqat.GcdTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jar:3.5.0:jar (default-jar) @ lab10-dataflow ---
+[INFO] Building jar: D:\Codings\2026\F.CSA313\lab10-dataflow\target\lab10-dataflow-1.0.jar
+[INFO] 
+[INFO] --- jacoco:0.8.12:report (report) @ lab10-dataflow ---
+[INFO] Loading execution data file D:\Codings\2026\F.CSA313\lab10-dataflow\target\jacoco.exec
+[INFO] Analyzed bundle 'lab10-dataflow' with 1 classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  6.294 s
+[INFO] Finished at: 2026-11-11T20:58:38+08:00
+[INFO] ------------------------------------------------------------------------
