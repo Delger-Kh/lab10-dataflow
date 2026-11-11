@@ -175,3 +175,25 @@ OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
 #### Тэмдэглэл: 32-ын short-circuit
 
 `attendance == null` үнэн бол `threshold < 0` огт үнэлэгдэхгүй. Тиймээс du4 (null) нь threshold-ийн 32T хосыг хамардаггүй — B5-ийг хамрахын тулд attendance ≠ null, threshold < 0 тест (du5) тусдаа хэрэгтэй.
+
+### B4 — Тестүүд (`src/test/java/mn/edu/must/sqat/BonusTest.java`)
+
+#### Шат 1: ALL-DEFS — 2 тест
+
+| Тест | Оролт → гаралт | Юуг хангах вэ |
+|---|---|---|
+| `ad1_mixedStreak` | {1,0,1,1,1,1,1}, thr=10 → 3 | score@51-ээс бусад 12 def бүгд use-д хүрнэ: эхний ирсэн өдөр (streak@36→41, best@37→42T), тасалсан өдөр (a→39F, streak@46→41), 5 дараалсан ирц (best@43→53T), present = 6 < 10 → 50F тул score@49 → 54, score@54 → 56 |
+| `ad2_oneDayMeetsThreshold` | {1}, thr=1 → 5 | score@51 → 53F → 56 |
+
+**Яагаад 1 тест хангалтгүй вэ?** score@49 ямар нэг use-д хүрэхийн тулд мөр 50 ХУДАЛ байх ёстой (үнэн бол мөр 51 score@49-ийг алчихна). Харин score@51 зөвхөн мөр 50 ҮНЭН үед л үүснэ. Нэг гүйцэтгэл мөр 50-д зөвхөн нэг салаагаар явдаг тул score@49 ба score@51-ийг нэг гүйцэтгэлд хоёуланг нь use-д хүргэх боломжгүй → **all-defs-д хамгийн багадаа 2 тест** хэрэгтэй.
+
+Үр дүн (`results/mvn-verify-alldefs.txt`): `Tests run: 5, Failures: 0, Errors: 0, Skipped: 0` (GcdTest 3 + BonusTest 2).
+
+`results/jacoco-alldefs.csv` (DataFlowTargets):
+
+| | MISSED | COVERED |
+|---|---|---|
+| BRANCH | 2 | 14 (14/16) |
+| LINE | 2 | 22 |
+
+All-defs хангагдсан ч **branch 100% биш (14/16)**: мөр 32-ын `attendance == null` ба `threshold < 0` нөхцлүүдийн ҮНЭН салаа хэзээ ч ажиллаагүй. Шалтгаан нь attendance@31, threshold@31 def-үүд 32F салаагаар аль хэдийн use-д хүрсэн тул all-defs 32T-г шаарддаггүй. Line-ийн 2 алдсан мөр нь мөр 33 (`throw`) ба мөр 7 (далд constructor).
