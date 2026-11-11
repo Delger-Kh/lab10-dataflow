@@ -197,3 +197,19 @@ OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
 | LINE | 2 | 22 |
 
 All-defs хангагдсан ч **branch 100% биш (14/16)**: мөр 32-ын `attendance == null` ба `threshold < 0` нөхцлүүдийн ҮНЭН салаа хэзээ ч ажиллаагүй. Шалтгаан нь attendance@31, threshold@31 def-үүд 32F салаагаар аль хэдийн use-д хүрсэн тул all-defs 32T-г шаарддаггүй. Line-ийн 2 алдсан мөр нь мөр 33 (`throw`) ба мөр 7 (далд constructor).
+
+#### Шат 2: ALL-DU-PAIRS — 5 тест нэмсэн (+3 нэмэлт шалгалт)
+
+Шат 1-ийн ad1, ad2 нь 35 хосын 26-г хамарсан. Үлдсэн биелэх 7 хосыг хамрахын тулд:
+
+| Тест | Оролт → гаралт | Шинээр хамрах хосууд |
+|---|---|---|
+| `du1_emptyThresholdZero` | {}, thr=0 → 5 | B12 present@35→50T, B26 best@37→53F |
+| `du2_emptyThresholdOne` | {}, thr=1 → 0 | B13 present@35→50F, B32 score@49→56 |
+| `du3_fiveInRowExactThreshold` | {1,1,1,1,1}, thr=5 → 8 | B33 score@51→54 |
+| `du4_nullThrows` | null, thr=0 → IllegalArgumentException | B1 attendance@31→32T |
+| `du5_negThresholdThrows` | {}, thr=-1 → IllegalArgumentException | B5 threshold@31→32T |
+
+Нэмэлт шалгалт (лабын тестийн санаанууд, шинэ хос нэмэхгүй): `du6_allAbsent` ({0,0,0}, 1 → 0 — бүгд тасалсан), `du7_longStreakBrokenInMiddle` ({1,1,1,0,1,1,1,1,1,1}, 9 → 8 — урт цуваа дунд нь тасарч, дараа нь 5-аас урт цуваа), `du8_fourInRowNoStreakBonus` ({1,1,1,1}, 4 → 5 — 4 дараалсан нь +3 авахад 1 дутуу).
+
+Ингэснээр биелэх **33/33 DU хос** хамрагдсан (хүснэгтийн "Тестийн ID" баганыг үз). Тестийн нийт тоо, JaCoCo-гийн эцсийн тоо нь Хэсэг C-гийн дараах `results/mvn-verify-final.txt`, `results/jacoco-final.csv`-д байна.
