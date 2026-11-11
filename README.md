@@ -77,3 +77,101 @@ OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
 **gcd(12, 8) хэдэн давталт хийдэг вэ?** 2 давталт: (12 % 8 = 4 → x = 8, y = 4), (8 % 4 = 0 → x = 4, y = 0), дараа нь 15F → return 4. Давталтын дотор хийсэн def дараагийн эргэлтийн эхэнд хүрэх хосууд — #3 (x17→16), #9 (y18→15T), #11 (y18→16), #12 (y18→17) — хамгийн багадаа **2 давталт** шаарддаг. Нэг давталттай gcd(0, 5) эдгээрийг хамарч чадахгүй.
 
 Иймээс all-DU-pairs-ийг T1 + T2 хоёр тест хангана; T3 нь нэмэлт шалгалт.
+
+---
+
+## Хэсэг B: bonus — бүрэн анализ
+
+### B1 — CFG
+
+![bonus CFG](cfg-bonus.png)
+
+Зангилаа бүр файлын мөрийн дугаартай, ирмэг бүрд түүнийг дайрдаг `BonusTest`-ийн методын нэр бичигдсэн. Мөр 38 (for-each): нөхцөл = attendance-д дараагийн элемент байгаа эсэх (attendance-ийн p-use), T салаа = дараагийн элементийг a-д оноох (a-ийн def).
+
+### B2 — Def/Use жагсаалт
+
+```java
+31: bonus(int[] attendance, int threshold)  // def: attendance, threshold
+32: if (attendance == null || threshold < 0) // p-use: attendance, threshold (32T, 32F)
+33:   throw ...                              // –
+35: int present = 0;                         // def: present
+36: int streak = 0;                          // def: streak
+37: int best = 0;                            // def: best
+38: for (int a : attendance)                 // p-use: attendance (38T, 38F); def: a (38T алхам)
+39:   if (a > 0)                             // p-use: a (39T, 39F)
+40:     present = present + 1;               // c-use: present; def: present
+41:     streak = streak + 1;                 // c-use: streak;  def: streak
+42:     if (streak > best)                   // p-use: streak, best (42T, 42F)
+43:       best = streak;                     // c-use: streak;  def: best
+46:   else streak = 0;                       // def: streak  (KILL: streak@36, streak@41)
+49: int score = 0;                           // def: score
+50: if (present >= threshold)                // p-use: present, threshold (50T, 50F)
+51:   score = 5;                             // def: score
+53: if (best >= 5)                           // p-use: best (53T, 53F)
+54:   score = score + 3;                     // c-use: score;   def: score
+56: return score;                            // c-use: score
+```
+
+Нийт 13 def: attendance@31, threshold@31, a@38, present@35, @40, streak@36, @41, @46, best@37, @43, score@49, @51, @54.
+
+### B3 — DU хүснэгт
+
+| # | Хувьсагч | Def | Use | c/p | Def-clear зам (жишээ) | Тестийн ID | Хамрагдсан |
+|---|---|---|---|---|---|---|---|
+| B1 | attendance | 31 | 32T | p | 31→32T | du4_nullThrows | ✔ |
+| B2 | attendance | 31 | 32F | p | 31→32F | ad1_mixedStreak | ✔ |
+| B3 | attendance | 31 | 38T | p | 31→32F→35→36→37→38T | ad1_mixedStreak | ✔ |
+| B4 | attendance | 31 | 38F | p | …→38F | ad1_mixedStreak, du1 | ✔ |
+| B5 | threshold | 31 | 32T | p | 31→32T (attendance ≠ null) | du5_negThresholdThrows | ✔ |
+| B6 | threshold | 31 | 32F | p | 31→32F | ad1_mixedStreak | ✔ |
+| B7 | threshold | 31 | 50T | p | …→50T | ad2_oneDayMeetsThreshold | ✔ |
+| B8 | threshold | 31 | 50F | p | …→50F | ad1_mixedStreak | ✔ |
+| B9 | a | 38 | 39T | p | 38T→39T | ad1_mixedStreak | ✔ |
+| B10 | a | 38 | 39F | p | 38T→39F | ad1_mixedStreak | ✔ |
+| B11 | present | 35 | 40 | c | 35→36→37→38T→39T→40 | ad1_mixedStreak | ✔ |
+| B12 | present | 35 | 50T | p | 35→…→38F→49→50T | du1_emptyThresholdZero | ✔ |
+| B13 | present | 35 | 50F | p | 35→…→38F→49→50F | du2_emptyThresholdOne | ✔ |
+| B14 | present | 40 | 40 | c | 40→41→42→(43)→38T→39T→40 | ad1_mixedStreak | ✔ |
+| B15 | present | 40 | 50T | p | 40→…→38F→49→50T | ad2_oneDayMeetsThreshold | ✔ |
+| B16 | present | 40 | 50F | p | 40→…→38F→49→50F | ad1_mixedStreak | ✔ |
+| B17 | streak | 36 | 41 | c | 36→37→38T→39T→40→41 | ad1_mixedStreak | ✔ |
+| B18 | streak | 41 | 41 | c | 41→42→(43)→38T→39T→40→41 | ad1_mixedStreak | ✔ |
+| B19 | streak | 41 | 42T | p | 41→42T | ad1_mixedStreak | ✔ |
+| B20 | streak | 41 | 42F | p | 41→42F | ad1_mixedStreak | ✔ |
+| B21 | streak | 41 | 43 | c | 41→42T→43 | ad1_mixedStreak | ✔ |
+| B22 | streak | 46 | 41 | c | 46→38T→39T→40→41 | ad1_mixedStreak | ✔ |
+| B23 | best | 37 | 42T | p | 37→38T→39T→40→41→42T | ad1_mixedStreak | ✔ |
+| B24 | best | 37 | 42F | p | — | — | ✘ биелэшгүй |
+| B25 | best | 37 | 53T | p | — | — | ✘ биелэшгүй |
+| B26 | best | 37 | 53F | p | 37→38F→49→50→53F | du1_emptyThresholdZero | ✔ |
+| B27 | best | 43 | 42T | p | 43→38T→39T→40→41→42T | ad1_mixedStreak | ✔ |
+| B28 | best | 43 | 42F | p | 43→38T→39F→46→38T→39T→40→41→42F | ad1_mixedStreak | ✔ |
+| B29 | best | 43 | 53T | p | 43→…→38F→49→50→53T | ad1_mixedStreak | ✔ |
+| B30 | best | 43 | 53F | p | 43→38F→49→50→51→53F | ad2_oneDayMeetsThreshold | ✔ |
+| B31 | score | 49 | 54 | c | 49→50F→53T→54 | ad1_mixedStreak | ✔ |
+| B32 | score | 49 | 56 | c | 49→50F→53F→56 | du2_emptyThresholdOne | ✔ |
+| B33 | score | 51 | 54 | c | 51→53T→54 | du3_fiveInRowExactThreshold | ✔ |
+| B34 | score | 51 | 56 | c | 51→53F→56 | ad2_oneDayMeetsThreshold | ✔ |
+| B35 | score | 54 | 56 | c | 54→56 | ad1_mixedStreak | ✔ |
+
+**Дүн:** 35 хос, үүнээс 2 биелэшгүй → **33 биелэх хос, 33/33 хамрагдсан.**
+
+#### Мөр 46 (`streak = 0`) ямар def-ийг алдаг вэ (kill)
+
+Мөр 46 нь **streak@36** ба **streak@41**-ийг алдаг. Тиймээс 39F→46 салаагаар дайрсан зам streak-ийн хувьд def-clear биш. streak@36 → 41 (B17) болон streak@41 → 41 (B18) хосууд нь 46-г тойрсон өөр замтай тул DU хос хэвээр; харин 46-ийн дараа ирэх streak-ийн use нь зөвхөн streak@46-ийнх болно.
+
+#### Kill-ээр тасардаг, DU хос гэж ТООЦООГҮЙ хослолууд
+
+- **streak@36 → 42 (T/F), 43** — 42, 43-т хүрэх бүх зам мөр 41-ээр дайрдаг, 41 нь streak-ийг дахин тодорхойлно.
+- **streak@46 → 42 (T/F), 43** — мөн адил мөр 41-ээр алагдана.
+- **present@35 → 40-ийн дараах use**, **best@37 → 43-ын дараах use** — эхний давталтад 40/43 ажилласны дараа хуучин def алагдсан; ийм use-д зөвхөн шинэ def хүрнэ.
+- **streak@41, streak@46 → давталтын гаднах use** — streak давталтын дараа хэрэглэгдэхгүй тул хос үүсэхгүй.
+
+#### Биелэшгүй хосуудын үндэслэл
+
+- **B24 best@37 → 42F:** мөр 42-т зөвхөн мөр 41-ийн дараа ирдэг тул streak ≥ 1, харин best@37 = 0 → `streak > best` анх ирэхэд үргэлж T; T салаа мөр 43-т best-ийг дахин тодорхойлдог тул best@37 хэзээ ч 42F-д хүрэхгүй.
+- **B25 best@37 → 53T:** best@37 мөр 53-т хүрэхийн тулд мөр 43 огт ажиллах ёсгүй (ирсэн өдөр байхгүй) → best = 0, `0 >= 5` үргэлж худал.
+
+#### Тэмдэглэл: 32-ын short-circuit
+
+`attendance == null` үнэн бол `threshold < 0` огт үнэлэгдэхгүй. Тиймээс du4 (null) нь threshold-ийн 32T хосыг хамардаггүй — B5-ийг хамрахын тулд attendance ≠ null, threshold < 0 тест (du5) тусдаа хэрэгтэй.
