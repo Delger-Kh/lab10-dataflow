@@ -82,4 +82,13 @@ class BonusTest {
     void du8_fourInRowNoStreakBonus() {
         assertEquals(5, DataFlowTargets.bonus(new int[]{1, 1, 1, 1}, 4));
     }
+    
+    // ---------- Part C: kills mutant M2 (best = present) ----------
+
+    @Test
+    @DisplayName("m2kill {1,1,0,1,1,1}, thr=10 -> 0: longest streak is 3, but after the absence "
+            + "present (5) != streak (3) when line 43 runs, so best = present would wrongly reach 5")
+    void m2kill_absenceThenStreakOfThree() {
+        assertEquals(0, DataFlowTargets.bonus(new int[]{1, 1, 0, 1, 1, 1}, 10));
+    }
 }
